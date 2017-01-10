@@ -4,3 +4,6 @@ target
 *.iws
 *.ipr
 .idea/
+/.classpath
+/.project
+/.settings
