@@ -54,6 +54,9 @@ class SqlLineOpts implements Completer {
   private String historyFile =
       new File(saveDir(), "history").getAbsolutePath();
   private String runFile;
+  private boolean shouldReadBlobFields = false;
+  private int blobStartOffset = 0;
+  private int blobReadLength = 2000;
 
   public SqlLineOpts(SqlLine sqlLine) {
     this.sqlLine = sqlLine;
@@ -445,6 +448,30 @@ class SqlLineOpts implements Completer {
 
   public String getRun() {
     return this.runFile;
+  }
+
+  public void setBlobStartOffset(int blobStartOffset) {
+    this.blobStartOffset = blobStartOffset;
+  }
+
+  public int getBlobStartOffset() {
+    return this.blobStartOffset;
+  }
+
+  public void setBlobReadLength(int blobReadLength) {
+    this.blobReadLength = blobReadLength;
+  }
+
+  public int getBlobReadLength() {
+    return this.blobReadLength;
+  }
+
+  public void setShouldReadBlobFields(boolean shouldReadBlobFields) {
+    this.shouldReadBlobFields = shouldReadBlobFields;
+  }
+
+  public boolean isShouldReadBlobFields() {
+    return this.shouldReadBlobFields;
   }
 }
 

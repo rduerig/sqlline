@@ -11,6 +11,7 @@
 */
 package sqlline;
 
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -165,6 +166,13 @@ abstract class Rows implements Iterator<Rows.Row> {
           break;
         case Types.BIT:
         case Types.CLOB:
+          Clob clob = rs.getClob(i + 1);
+          if (clob == null) {
+            values[i] = "null";
+          } else {
+            values[i] = readClob(clob);
+          }
+          break;
         case Types.BLOB:
         case Types.REF:
         case Types.JAVA_OBJECT:
@@ -186,6 +194,13 @@ abstract class Rows implements Iterator<Rows.Row> {
         sizes[i] = values[i] == null ? 1 : values[i].length();
       }
     }
+
+    private String readClob(Clob clob) throws SQLException {
+      int blobStartOffset = sqlLine.getOpts().getBlobStartOffset();
+      int blobReadLength = sqlLine.getOpts().getBlobReadLength();
+      return clob.getSubString(blobStartOffset, blobReadLength);
+    }
+
   }
 }
 
