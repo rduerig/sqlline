@@ -11,6 +11,7 @@
 */
 package sqlline;
 
+import java.sql.Blob;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -164,8 +165,10 @@ abstract class Rows implements Iterator<Rows.Row> {
             values[i] = o.toString();
           }
           break;
-        case Types.BIT:
         case Types.CLOB:
+          if (!sqlLine.getOpts().getShouldReadBlobFields()) {
+            break;
+          }
           Clob clob = rs.getClob(i + 1);
           if (clob == null) {
             values[i] = "null";
@@ -174,6 +177,17 @@ abstract class Rows implements Iterator<Rows.Row> {
           }
           break;
         case Types.BLOB:
+          if (!sqlLine.getOpts().getShouldReadBlobFields()) {
+            break;
+          }
+          Blob blob = rs.getBlob(i + 1);
+          if (blob == null) {
+            values[i] = "null";
+          } else {
+            values[i] = readBlob(blob);
+          }
+          break;
+        case Types.BIT:
         case Types.REF:
         case Types.JAVA_OBJECT:
         case Types.STRUCT:
@@ -199,6 +213,12 @@ abstract class Rows implements Iterator<Rows.Row> {
       int blobStartOffset = sqlLine.getOpts().getBlobStartOffset();
       int blobReadLength = sqlLine.getOpts().getBlobReadLength();
       return clob.getSubString(blobStartOffset, blobReadLength);
+    }
+
+    private String readBlob(Blob blob) throws SQLException {
+      int blobStartOffset = sqlLine.getOpts().getBlobStartOffset();
+      int blobReadLength = sqlLine.getOpts().getBlobReadLength();
+      return new String(blob.getBytes(blobStartOffset, blobReadLength));
     }
 
   }

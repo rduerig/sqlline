@@ -470,7 +470,7 @@ class SqlLineOpts implements Completer {
     this.shouldReadBlobFields = shouldReadBlobFields;
   }
 
-  public boolean isShouldReadBlobFields() {
+  public boolean getShouldReadBlobFields() {
     return this.shouldReadBlobFields;
   }
 }
